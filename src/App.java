@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class App {
+    //#region
     static String nombreProducto, fechaVenciProducto;
     static int stockProducto;
     static double costoProducto, precioProducto;
@@ -13,24 +14,30 @@ public class App {
     static DateTimeFormatter formatofecha = DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy");
     static DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     //static ArrayList<Producto> productos=new ArrayList<Producto>();
+    //#endregion
     public static void main(String[] args) throws Exception {
+        System.out.println("");
         System.out.print("PULPERIA GLORIA");
         System.out.println("                                                  Fecha: " + hoy.format(formatofecha));
+        MenuPrincipal();
+    }
+
+    public static void MenuPrincipal(){
         boolean key=true;
         while (key) {
             System.out.println("");
             System.out.println("<--------Menu Principal------->");
             System.out.println("1. Inventario");
-            System.out.println("2. Registrar venta");
+            System.out.println("2. Ventas");
             System.out.println("3. Salir");
             System.out.print("Ingrese una opcion: ");
             int opcion=obtenerOpcionValida();
             switch (opcion) {
                 case 1:
-                    Menu();
+                    MenuInventario();
                     break;
                 case 2:
-                    //Venta();
+                    MenuVentas();
                     break;
                 case 3:
                     System.out.println("Saliendo.....");
@@ -44,7 +51,7 @@ public class App {
         }
     }
 
-    public static void Menu() {
+    public static void MenuInventario() {
         boolean key = true;
         while (key) {
             System.out.println("");
@@ -55,7 +62,7 @@ public class App {
             System.out.println("4. Actualizar Productos");
             System.out.println("5. Eliminar Productos");
             System.out.println("6. Buscar producto");
-            System.out.println("7. Salir");
+            System.out.println("7. Regresar");
             System.out.print("Ingrese una opcion: ");
             int opt=obtenerOpcionValida();
            
@@ -83,12 +90,52 @@ public class App {
                         System.out.println("Buscando producto...");
                         break;
                     case 7:
-                        key = false;
-                        System.out.println("Saliendo del sistema...");
+                        key=false;
                         break;
                     default:
                         System.out.println("Ingrese una opción válida...");
                         break;
+            }
+        }
+    }
+
+    public static void MenuVentas(){
+        boolean key=true;
+        while (key) {
+            System.out.println("");
+            System.out.println("<---------SISTEMA DE VENTAS---------->");
+            System.out.println("1. Ver registro de ventas");
+            System.out.println("2. Registrar nueva venta");
+            System.out.println("3. Regresar");
+            System.out.print("Ingrese una opcion: ");
+            int opt=obtenerOpcionValida();
+            switch (opt) {
+                case 1:
+                    
+                    break;
+                case 2:
+
+                    break;
+                case 3:
+                    key=false;
+                    break;
+            
+                default:
+                System.out.println("Opcion invalida.....");
+                    break;
+            }
+        }
+    }
+    
+    public static int obtenerOpcionValida() {
+        while (true) {
+            try {
+                int opcion = sc.nextInt();
+                sc.nextLine(); 
+                return opcion;
+            } catch (Exception e) {
+                System.out.print("Opción inválida. Por favor ingrese un número: ");
+                sc.nextLine(); 
             }
         }
     }
@@ -123,17 +170,12 @@ public class App {
         }
     }
 
-    public static int obtenerOpcionValida() {
-        while (true) {
-            try {
-                int opcion = sc.nextInt();
-                sc.nextLine();  // Limpiar el buffer del escáner
-                return opcion;
-            } catch (Exception e) {
-                System.out.print("Opción inválida. Por favor ingrese un número: ");
-                sc.nextLine();  // Limpiar el buffer del escáner
-            }
-        }
+    public static void FechaVencimiento(){
+        System.out.printf("%-10s %-20s %-10s %-10s %-20s%n", "Codigo", "Nombre", "Cantidad", "Precio", "Fecha de Vencimiento");
+        System.out.println("---------------------------------------------------------------");
+        // for (Producto p : inventario) {
+        //     System.out.printf("%-10s %-20s %-10d %-10.2f %-20s%n", p.getCodigo(), p.getNombre(), p.getCantidad(), p.getPrecio(), p.getFechaVencimiento());
+        // }
     }
 
 }
