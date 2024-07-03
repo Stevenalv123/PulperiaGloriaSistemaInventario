@@ -1,7 +1,9 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-//import java.util.ArrayList;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class App {
@@ -13,8 +15,8 @@ public class App {
     static LocalDate hoy = LocalDate.now();
     static DateTimeFormatter formatofecha = DateTimeFormatter.ofPattern("EEEE, dd 'de' MMMM 'de' yyyy");
     static DateTimeFormatter inputFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    //static ArrayList<Producto> listaProductos=new ArrayList<Producto>();
-    //static ArrayList<Venta> listaVentas=new ArrayList<Venta>();
+    static ArrayList<Producto> listaProductos=new ArrayList<Producto>();
+    static ArrayList<Venta> listaVentas=new ArrayList<Venta>();
     //#endregion
     public static void main(String[] args) throws Exception {
         System.out.println("");
@@ -140,9 +142,9 @@ public class App {
     public static void MostrarProductos(){
         System.out.printf("%-10s %-20s %-10s %-10s %-20s%n", "Codigo", "Nombre", "Cantidad", "Precio", "Fecha de Vencimiento");
         System.out.println("---------------------------------------------------------------");
-        // for (Producto p : listaProductos) {
-        //     System.out.printf("%-10s %-20s %-10d %-10.2f %-20s%n", p.getCodigo(), p.getNombre(), p.getCantidad(), p.getPrecio(), p.getFechaVencimiento());
-        // }
+        for (Producto p : listaProductos) {
+            System.out.printf("%-10s %-20s %-10d %-10.2f %-20s%n", p.codigo, p.nombre, p.cantidadStock, p.precio, p.fechaVencimiento);
+        }
     }
 
     public static void AgregarProducto(){
@@ -152,8 +154,6 @@ public class App {
         stockProducto=sc.nextInt();
         System.out.print("Costo del producto: ");
         costoProducto=sc.nextDouble();
-        System.out.print("Precio de venta: ");
-        precioProducto=sc.nextDouble();
         sc.nextLine();
         LocalDate fechaVencimiento = null;
         while (fechaVencimiento == null) {
@@ -165,105 +165,140 @@ public class App {
                 System.out.println("Formato de fecha inválido. Por favor, intente de nuevo.");
             }
         }
+        codigoProducto=Producto.generadorCodigo();
+        precioProducto=Producto.calcularPrecio(costoProducto);
+        Producto producto=new Producto(codigoProducto, nombreProducto, costoProducto, precioProducto, fechaVencimiento, stockProducto);
+        listaProductos.add(producto);
+        System.out.println("Producto agregado correctamente....");
     }
 
-    public static void FechaVencimiento(){
-        System.out.printf("%-10s %-20s %-10s %-10s %-20s%n", "Codigo", "Nombre", "Cantidad", "Precio", "Fecha de Vencimiento");
-        System.out.println("---------------------------------------------------------------");
-        // for (Producto p : listaProductos) {
-        //     System.out.printf("%-10s %-20s %-10d %-10.2f %-20s%n", p.getCodigo(), p.getNombre(), p.getCantidad(), p.getPrecio(), p.getFechaVencimiento());
-        // }
+    public static void FechaVencimiento() {
+    // Crear un comparador para ordenar los productos por fecha de vencimiento más cercana a hoy
+    Comparator<Producto> comparadorFechaVencimiento = new Comparator<Producto>() {
+        @Override
+        public int compare(Producto p1, Producto p2) {
+            LocalDate fechaVencimiento1 = p1.fechaVencimiento;
+            LocalDate fechaVencimiento2 = p2.fechaVencimiento;
+            // Comparar las fechas de vencimiento con respecto a la fecha actual
+            return fechaVencimiento1.compareTo(fechaVencimiento2);
+        }
+    };
+
+    // Ordenar la lista de productos utilizando el comparador
+    Collections.sort(listaProductos, comparadorFechaVencimiento);
+
+    // Mostrar los productos ordenados por fecha de vencimiento
+    System.out.printf("%-10s %-20s %-10s %-10s %-20s%n", "Codigo", "Nombre", "Cantidad", "Precio", "Fecha de Vencimiento");
+    System.out.println("---------------------------------------------------------------");
+    for (Producto p : listaProductos) {
+        System.out.printf("%-10s %-20s %-10d %-10.2f %-20s%n", p.codigo, p.nombre, p.cantidadStock, p.precio, p.fechaVencimiento.format(inputFormatter));
     }
+}
+
 
     public static void ActualizarProducto(){
-        System.out.println("Ingrese el codigo del producto: ");
+        System.out.print("Ingrese el codigo del producto: ");
         codigoProducto=sc.nextInt();
-        // for (Producto produc : listaProductos) {
-        //     if (codigoProducto==produc.codigoProducto) {
-        //         boolean key=false;
-        //         while (key) {
-        //             System.out.println("¿Que va a actualizar del Producto: "+produc.nombreProducto+"?");
-        //             System.out.println("1. Nombre de Producto");
-        //             System.out.println("2. Costo del Producto");
-        //             System.out.println("3. Precio del Producto");
-        //             System.out.println("4. Fecha de Vencimiento");
-        //             System.out.println("5. Regresar");
-        //             System.out.print("Ingrese una opcion: ");
-        //             int opcion=obtenerOpcionValida();
-        //             switch (opcion) {
-        //                 case 1:
-        //                     System.out.print("Ingrese el nuevo nombre del producto: ");
-        //                     nombreProducto=sc.nextLine();
-        //                     break;
-        //                 case 2:
-        //                     System.out.println("Ingrese el nuevo costo del producto: ");
-        //                     costoProducto=sc.nextDouble();
-        //                     break;
-        //                 case 3:
-        //                     System.out.println("Ingrese el nuevo costo del producto: ");
-        //                     precioProducto=sc.nextDouble();
-        //                     break;
-        //                 case 4:
-        //                     System.out.println("Ingrese la nueva fecha de vencimiento: ");
-        //                     fechaVenciProducto=sc.nextLine();
-        //                     break;
-        //                 case 5:
-        //                     key=false;
-        //                     break;
+        for (Producto produc : listaProductos) {
+             if (codigoProducto==produc.codigo) {
+                 boolean key=true;
+                 while (key) {
+                     System.out.println("¿Que va a actualizar del Producto: "+produc.nombre+"?");
+                     System.out.println("1. Nombre de Producto");
+                     System.out.println("2. Costo del Producto");
+                     System.out.println("3. Fecha de Vencimiento");
+                     System.out.println("4. Regresar");
+                     System.out.print("Ingrese una opcion: ");
+                     int opcion=obtenerOpcionValida();
+                     switch (opcion) {
+                         case 1:
+                             System.out.print("Ingrese el nuevo nombre del producto: ");
+                             nombreProducto=sc.nextLine();
+                             produc.nombre=nombreProducto;
+                            break;
+                        case 2:
+                            System.out.println("Ingrese el nuevo costo del producto: ");
+                            costoProducto=sc.nextDouble();
+                            produc.setCosto(costoProducto);
+                            Producto.calcularPrecio(costoProducto);
+                            break;
+                        case 3:
+                            System.out.println("Ingrese la nueva fecha de vencimiento: ");
+                            fechaVenciProducto=sc.nextLine();
+                            produc.fechaVencimiento=LocalDate.parse(fechaVenciProducto, inputFormatter);
+                            break;
+                        case 4:
+                            key=false;
+                            break;
                     
-        //                 default:
-        //                 System.out.println("Opcion invalida....");
-        //                     break;
-        //             }
-        //         }
-        //     } else {
-        //         System.out.println("No se puedo encontrar el producto....");
-        //     }
-        // }
+                        default:
+                        System.out.println("Opcion invalida....");
+                            break;
+                    }
+                }
+            } else {
+                System.out.println("No se puedo encontrar el producto....");
+            }
+        }
     }
 
-    public static void EliminarProducto(){
-        System.out.println("Ingrese el codigo del producto: ");
-        codigoProducto=sc.nextInt();
-        // for (Producto produc : listaProductos) {
-        //     if (codigoProducto==produc.codigoProducto) {
-        //         System.out.println("¿Estas seguro que quieres eliminar este producto?");
-        //         System.out.println("1. Si"); 
-        //         System.out.println("2. No");
-        //         System.out.print("Ingrese una opcion: ");
-        //         int opcion=obtenerOpcionValida();
-        //         switch (opcion) {
-        //             case 1:
-        //                 System.out.println("Producto eliminado correctamente...");
-        //                 break;
-        //             default:
-        //             System.out.println("Opcion invalida......");
-        //                 break;
-        //         }
-        //     } else {
-        //         System.out.println("No se encontro el producto...");
-        //     }
-        // }
+    public static void EliminarProducto() {
+        System.out.print("Ingrese el codigo del producto: ");
+        int codigoProducto = sc.nextInt();
+        boolean productoEncontrado = false;
+    
+        // Recorremos la lista para encontrar el producto
+        for (int i = 0; i < listaProductos.size(); i++) {
+            Producto produc = listaProductos.get(i);
+            if (codigoProducto == produc.codigo) {
+                productoEncontrado = true;
+                System.out.println("¿Estás seguro que quieres eliminar este producto?");
+                System.out.println("1. Sí");
+                System.out.println("2. No");
+                System.out.print("Ingrese una opción: ");
+                int opcion = obtenerOpcionValida();
+    
+                switch (opcion) {
+                    case 1:
+                        listaProductos.remove(i); // Eliminamos el producto de la lista
+                        System.out.println("Producto eliminado correctamente...");
+                        break;
+                    case 2:
+                        System.out.println("No se eliminó el producto.");
+                        break;
+                    default:
+                        System.out.println("Opción inválida...");
+                        break;
+                }
+                break; // Salimos del bucle una vez que encontramos y procesamos el producto
+            }
+        }
+    
+        if (!productoEncontrado) {
+            System.out.println("No se encontró el producto...");
+        }
     }
     
-    public static void BuscarProducto(){
-        System.out.println("Ingrese el codigo del producto: ");
-        codigoProducto=sc.nextInt();
-        // for (Producto p : listaProductos) {
-        //     if (codigoProducto==p.codigoProducto) {
-        //         System.out.printf("%-10s %-20s %-10s %-10s %-20s%n", "Codigo", "Nombre", "Cantidad", "Precio", "Fecha de Vencimiento");
-        //         System.out.println("---------------------------------------------------------------");
-        //         System.out.printf("%-10s %-20s %-10d %-10.2f %-20s%n", p.getCodigo(), p.getNombre(), p.getCantidad(), p.getPrecio(), p.getFechaVencimiento());
-        //     } else {
-        //         System.out.println("No se encontro el producto...");
-        //     }
-        // }
+    
+    public static void BuscarProducto() {
+        System.out.print("Ingrese el codigo del producto: ");
+        int codigoProducto = sc.nextInt();
+        boolean productoEncontrado = false;
+    
+        for (Producto p : listaProductos) {
+            if (codigoProducto == p.codigo) {
+                System.out.printf("%-10s %-20s %-10s %-10s %-20s%n", "Codigo", "Nombre", "Cantidad", "Precio", "Fecha de Vencimiento");
+                System.out.println("---------------------------------------------------------------");
+                System.out.printf("%-10s %-20s %-10d %-10.2f %-20s%n", p.codigo, p.nombre, p.cantidadStock, p.precio, p.fechaVencimiento);
+                productoEncontrado = true;
+                break;
+            }
+        }
+    
+        if (!productoEncontrado) {
+            System.out.println("No se encontró el producto...");
+        }
     }
-
-    // public static void RegistrarVenta(){
-    //     System.out.println("Ingrese la cantidad de productos que se va a vender: ");
-    //     int n=sc.nextInt();
-    //     Venta[] producAvender=new Venta[n];
-    //     System.out.println();
-    // }
+    
+    
 }

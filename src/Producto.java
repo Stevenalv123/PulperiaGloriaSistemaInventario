@@ -1,15 +1,15 @@
-import java.util.Date;
-import java.util.Random;
+import java.time.LocalDate;
 
 public class Producto {
+    public static int codigoBase=1000;
     public int codigo;
     public String nombre;
     private double costo; 
     public double precio;
-    public Date fechaVencimiento;
+    public LocalDate fechaVencimiento;
     public int cantidadStock;
 
-    public Producto(int codigo, String nombre, double costo, double precio, Date fechaVencimiento, int cantidadStock) {
+    public Producto(int codigo, String nombre, double costo, double precio, LocalDate fechaVencimiento, int cantidadStock) {
         this.codigo = codigo;
         this.nombre = nombre;
         this.costo = costo;
@@ -26,17 +26,16 @@ public class Producto {
     }
 
     
-    public double calcularPrecio() {
+    public static double calcularPrecio(double costo) {
         double porcentaje = 0.35;
         double porcentajeCosto = costo * porcentaje;
         double precio = costo + porcentajeCosto;
         return precio;
     }
 
-    public int generadorCodigo() {
-    
-        Random codigorandom = new Random();
-        return codigorandom.nextInt();
+    public static int generadorCodigo() {
+        codigoBase++;
+        return codigoBase;
     }
 
 
