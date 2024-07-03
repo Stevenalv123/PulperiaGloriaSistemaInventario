@@ -260,10 +260,10 @@ public class App {
         // }
     }
 
-    public static void RegistrarVenta(){
-        System.out.println("Ingrese la cantidad de productos que se va a vender: ");
-        int n=sc.nextInt();
-        Venta[] producAvender=new Venta[n];
-        System.out.println();
-    }
+    // public static void RegistrarVenta(){
+    //     System.out.println("Ingrese la cantidad de productos que se va a vender: ");
+    //     int n=sc.nextInt();
+    //     Venta[] producAvender=new Venta[n];
+    //     System.out.println();
+    // }
 }
