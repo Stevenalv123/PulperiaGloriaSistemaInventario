@@ -6,7 +6,7 @@ public class VentaDetalle {
     public VentaDetalle(Producto producto, int cantidad) {
         this.producto = producto;
         this.cantidad = cantidad;
-        this.total = cantidad * producto.getPrecioVenta();
+        this.total =total;
     }
 
     public Producto getProducto() {
@@ -23,7 +23,7 @@ public class VentaDetalle {
 
     public void setCantidad(int cantidad) {
         this.cantidad = cantidad;
-        this.total = cantidad * producto.getPrecioVenta();
+        this.total = total;
     }
 
     public double getTotal() { 
