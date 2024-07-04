@@ -10,7 +10,7 @@ public class Producto {
     public int cantidadStock;
 
     public Producto(int codigo, String nombre, double costo, double precio, LocalDate fechaVencimiento, int cantidadStock) {
-        this.codigo = codigo;
+        this.codigo = generadorCodigo();
         this.nombre = nombre;
         this.costo = costo;
         this.precio = precio;
@@ -34,8 +34,7 @@ public class Producto {
     }
 
     public static int generadorCodigo() {
-        codigoBase++;
-        return codigoBase;
+        return codigoBase++;
     }
 
 
